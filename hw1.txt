@@ -1,0 +1,63 @@
+Author: Keqiu Hu(kh2567)
+Reference: 	   Operating System Concepts, 9th Edition
+		   http://www.cs.ucsb.edu/~chris/teaching/cs170/
+		   http://wiki.answers.com
+		   http://cs.nyu.edu/~yap/classes/
+		   http://chris.dod.net/school/cos450
+		   http://www.cs.rutgers.edu/~pxk/416
+		   http://en.wikipedia.org/wiki/Loadable_kernel_module
+		   
+Exercise numbers X.Y refer to the exercise problem Y in Chapter X in the course textbook, Operating Systems Concepts 9e. Each problem is worth 5 points. Make your answers concise. You'll lose points for verbosity.
+
+1. 1.19: What is the purpose of interrupts? How does an interrupt differ from a trap? Can traps be generated intentionally by a user program? If so, for what purpose?
+
+a. The purpose of interrupts is to transfer program control to a specific address based on some event. In processors with a privileged mode of execution, the interrupt also causes a mode switch into kernel mode. 
+b. A trap is software-generated interrupt while an interrupt is triggered by a signal to the processor. Traps are synchronous with the instruction stream: a direct result of the execution of a specific instruction while hardware interrupts are asynchronous. 
+c. Yes. Traps can occur through exceptions or through explicit instructions in the program. The reason for this is to allow a user to force a mode switch to kernel mode.
+
+2. 1.20: Direct memory access is used for high-speed I/O devices in order to avoid increasing the CPUs execution load.
+How does the CPU interface with the device to coordinate the transfer?
+How does the CPU know when the memory operations are complete?
+The CPU is allowed to execute other programs while the DMA controller is transferring data. Does this process interfere with the execution of the user programs? If so, describe what forms of interference are caused.
+
+a. All devices have special hardware controller. Normally, the OS has device drivers that communicate with the controllers. The device drivers have registers, counters and buffers to store arguments and results. Normally, these drivers sits in a tight loop to see the I/O through. But these would tie up the CPU during I/O. With direct memory access, the CPIU first loads them and then the device controller takes over.
+b. The device controller sends an interrupt to the CPU.
+c. There is no interference with user programs provided with discount interrupts. The direct memory access controller sends an interrupt when it is done and this can cause a user process to be suspended.
+
+
+3. 1.21: Some computer systems do not provide a privileged mode of operation in hardware. Is it possible to construct a secure operating system for these computer systems? Give arguments both that it is and that it is not possible.
+
+a. Yes. Because you can regulate all action through the operating system. That means, all requests for resources can be made to go through the operating system. Whatever can be done in hardware can also be done in software.
+b. No. There are always a way to exploit complex operating systems and many have argued that there are never ways to be a hundred percent sure about the security of a system against attackers.
+
+4. 1.27: Describe some of the challenges of designing operating systems for mobile devices compared with designing operating systems for traditional PCs.
+
+a. Besides a core kernel, middleware must be designed in mobile operating systems to support a set of software frameworks that provide additional services to application developers. 
+b. Different from using a physical keyboard and mouse, mobile devices need to features a touch screen and let user interact withe the system by pressing and swiping fingers across the screen.
+c. Mobile operating system must balance the performance with the battery life.
+d. Mobile operating system must have a good support for external peripheral devices like GPS, HDMI which is essential for mobile devices.
+e. Mobile operating system must consider the limited resources since the mobile devices is much smaller compared with PC.
+f. The mobile devices are more and more related to people's privacy, so the security of the operating system for the mobile devices counts even more than the traditional PCs and harder to prevent malicious code and access.
+
+
+5. 2.21: What is the main advantage of the microkernel approach to system design? How do user programs and system services interact in a microkernel architecture? What are the disadvantages of using the microkernel approach?
+
+a. This will make the design of kernel simpler and no need to modify the kernel when new services added. And also providing a better controls over security.
+b. They can communicate via interprocess communication mechanisms such as messages.
+c. An overuse of messaging and context switching typically will impact performance.
+
+
+6. 2.22: What are the advantages of using loadable kernel modules?
+
+With loadable kernel modules, the operating system would not have to include all possible anticipated functionality already compiled directly into the base kernel. Much of that functionality would reside in memory without being used, wasting memory. Loadable kernel modules would allow the kernel to provide core services yet also allows certain features to be implemented dynamically. Also, with loadable kernel modules, there is no need to recompile the whole kernel if new features need to be added or there is bug to be fixed.
+
+7. What is the difference between kernel modules and a microkernel? Can loadable kernel modules be a replacement for microkernels? Explain in what ways they can (if any) and what ways they cannot (if any).
+
+Microkernel provide a communication facility between the client program and the various services that are also running in user space while modular kernels are run in kernel mode. The communication is provided by message passing while the loadable kernel modules is through core module loading and communication. Different from loadable kernel modules, the microkernels have most services running as user processes rather than kernel mode processes. And if a service fails, the rest of the operating system remains untouched.
+
+Though the modular kernel approach is similar to the microkernel in that the primary module has only core functions and knowledge of how to load and communicate with other modules, and it is much more efficient since the modules do not need to invoke message passing in order to communicate and the microkernel suffers a lot from performance decrease due to the increased system function overhead, the kernel modules cannot replace microkernels completely because module are still dependent on the hardware while the microkernel provides more security and reliability and much easier to port one hardware design to another.
+
+
+8. A primary task of an OS is to multiplex access to shared resources. Describe at-least two different ways in which this can be done, and state which way is usually applied to each of the following resources: CPU, Memory, Disk, Audio-device, Network-device, Display.
+
+There are two ways to multiplex shared resources. One is time multiplexing, or time-sharing, this is to schedule a serially-reusable resource among several users. Like CPU, Audio-device,and display. The other one is space multiplexing, or space-sharing, that is to divide a multiple-use resource up among several users. Like memory, Disk, and Network-device.
